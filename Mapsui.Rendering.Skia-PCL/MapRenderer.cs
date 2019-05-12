@@ -80,6 +80,8 @@ namespace Mapsui.Rendering.Skia
             {
                 layers = layers.ToList();
 
+                canvas.Clear();
+
                 VisibleFeatureIterator.IterateLayers(viewport, layers, (v, l, s, o) => { RenderFeature(canvas, v, l, s, o); });
 
                 RemovedUnusedBitmapsFromCache();

@@ -1,5 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Text;
+using BruTile;
+using BruTile.Predefined;
+using BruTile.Web;
 using Mapsui.Geometries;
 using Mapsui.Layers;
 using Mapsui.Providers;
@@ -21,6 +27,7 @@ namespace Mapsui.Samples.Common.Maps
             var map = new Map();
 
             map.Layers.Add(OpenStreetMap.CreateTileLayer());
+            map.Layers.Add(TPLayer());
             map.Layers.Add(CreateInfoLayer(map.Envelope));
             map.Layers.Add(CreateHoverLayer(map.Envelope));
             map.Layers.Add(CreatePolygonLayer());
@@ -32,6 +39,18 @@ namespace Mapsui.Samples.Common.Maps
             map.HoverLayers.Add(map.Layers.First(l => l.Name == HoverLayerName));
 
             return map;
+        }
+
+        private static ILayer TPLayer()
+        {
+            var tileSourceBase = "http://116.203.124.112:8080/geoserver/gwc/service/tms/1.0.0/places:places_pulsing@EPSG:900913@png";
+            var tl = new TileLayer(new HttpTileSource(new GlobalSphericalMercator(),
+                    new TileRequest(tileSourceBase + "/{z}/{x}/{y}.png"), "My Map")
+                )
+            {
+                Name = "tpl"
+            };
+            return tl;
         }
 
         private static ILayer CreatePolygonLayer()
@@ -182,6 +201,28 @@ namespace Mapsui.Samples.Common.Maps
                 Fill = new Brush(new Color(213, 234, 194)),
                 Outline = { Color = Color.Gray, Width = 1 }
             };
+        }
+    }
+
+    public class TileRequest : IRequest
+    {
+        private readonly string _urlFormatter;
+
+        public TileRequest(string urlFormatter)
+        {
+            _urlFormatter = urlFormatter;
+        }
+
+        public Uri GetUri(TileInfo info)
+        {
+            var y = System.Math.Pow(2, Convert.ToInt32(info.Index.Level)) - info.Index.Row - 1;
+
+            var stringBuilder = new StringBuilder(_urlFormatter);
+            stringBuilder.Replace("{x}", info.Index.Col.ToString(CultureInfo.InvariantCulture));
+            stringBuilder.Replace("{y}", y.ToString(CultureInfo.InvariantCulture));
+            stringBuilder.Replace("{z}", info.Index.Level);
+
+            return new Uri(stringBuilder.ToString());
         }
     }
 }

@@ -14,6 +14,7 @@ using Mapsui.Fetcher;
 using Mapsui.Layers;
 using Mapsui.Logging;
 using Mapsui.Widgets;
+using SkiaSharp;
 using SkiaSharp.Views.Android;
 using Math = System.Math;
 
@@ -21,8 +22,8 @@ namespace Mapsui.UI.Android
 {
     public partial class MapControl : ViewGroup, IMapControl
     {
-        private SKCanvasView _canvas;
-        private Map _map;
+        private SKGLSurfaceView _canvas;
+        public Map _map;
         private double _innerRotation;
         private GestureDetector _gestureDetector;
         private Handler _mainLooperHandler;
@@ -45,13 +46,15 @@ namespace Mapsui.UI.Android
         {
             SetBackgroundColor(Color.Transparent);
             _scale = DetermineSkiaScale();
-            _canvas = new SKCanvasView(Context);
-            _canvas.PaintSurface += CanvasOnPaintSurface;
+            _canvas = new SKGLSurfaceView(Context); //new SKCanvasView(Context);
+            //_canvas.PaintSurface += CanvasOnPaintSurface;
+            Map = new Map();
+            _canvas.SetRenderer(new R(this, _scale));
             AddView(_canvas);
 
             _mainLooperHandler = new Handler(Looper.MainLooper);
 
-            Map = new Map();
+            //Map = new Map();
             TryInitializeViewport();
             Touch += MapView_Touch;
 
@@ -93,7 +96,7 @@ namespace Mapsui.UI.Android
             Renderer.Render(args.Surface.Canvas, _map.Viewport, _map.Layers, _map.Widgets, _map.BackColor);
         }
 
-        private void TryInitializeViewport()
+        public void TryInitializeViewport()
         {
             if (_map.Viewport.Initialized) return;
 
@@ -388,5 +391,29 @@ namespace Mapsui.UI.Android
             base.Dispose(disposing);
         }
 
+    }
+
+    public class R : SKGLSurfaceView.ISKRenderer
+    {
+        private float _scale;
+
+        public R(MapControl m, float _scale)
+        {
+            this.M = m;
+            this._scale = _scale;
+        }
+
+        public MapControl M { get; }
+
+        [Obsolete]
+        public void OnDrawFrame(SKSurface surface, GRBackendRenderTargetDesc renderTarget)
+        {
+            this.M.TryInitializeViewport();
+            if (!M._map.Viewport.Initialized) return;
+
+            surface.Canvas.Scale(_scale, _scale); // we can only set the scale in the render loop
+
+            this.M.Renderer.Render(surface.Canvas, M._map.Viewport, M._map.Layers, M._map.Widgets, M._map.BackColor);
+        }
     }
 }
