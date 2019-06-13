@@ -56,7 +56,7 @@ namespace Mapsui.Rendering.Skia
             (scaleBarLength1, scaleBarText1, scaleBarLength2, scaleBarText2) = scaleBar.GetScaleBarLengthAndText();
 
             // Calc height of scale bar
-            SKRect textSize;
+            SKRect textSize = SKRect.Empty;
 
             // Do this, because height of text changes sometimes (e.g. from 2 m to 1 m)
             _paintScaleTextStroke.MeasureText("9999 m", ref textSize);
@@ -109,8 +109,8 @@ namespace Mapsui.Rendering.Skia
             // Draw text
 
             // Calc text height
-            SKRect textSize1;
-            SKRect textSize2;
+            SKRect textSize1 = SKRect.Empty;
+            SKRect textSize2 = SKRect.Empty;
 
             scaleBarText1 = scaleBarText1 ?? string.Empty;
             scaleBarText2 = scaleBarText2 ?? string.Empty;

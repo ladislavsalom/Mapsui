@@ -21,7 +21,7 @@ namespace Mapsui.Rendering.Skia
             var vertices = WorldToScreen(viewport, lineString);
 
             var path = new SKPath();
-            SKPoint lastPoint;
+            SKPoint lastPoint = SKPoint.Empty;
 
             for (var i = 1; i < vertices.Count; i++)
             {

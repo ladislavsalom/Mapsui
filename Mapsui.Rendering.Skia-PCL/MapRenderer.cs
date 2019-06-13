@@ -18,6 +18,8 @@ namespace Mapsui.Rendering.Skia
         private const int MinimumTilesToKeep = 32;
         private readonly SymbolCache _symbolCache = new SymbolCache();
 
+        public static IRendererFactory RendererFactory { get; set; }
+
         private readonly IDictionary<object, BitmapInfo> _tileCache =
             new Dictionary<object, BitmapInfo>(new IdentityComparer<object>());
 
@@ -80,7 +82,7 @@ namespace Mapsui.Rendering.Skia
             {
                 layers = layers.ToList();
 
-                canvas.Clear();
+                //canvas.Clear();
 
                 VisibleFeatureIterator.IterateLayers(viewport, layers, (v, l, s, o) => { RenderFeature(canvas, v, l, s, o); });
 
@@ -121,20 +123,27 @@ namespace Mapsui.Rendering.Skia
 
         private void RenderFeature(SKCanvas canvas, IViewport viewport, IStyle style, IFeature feature, float layerOpacity)
         {
-            if (feature.Geometry is Point)
-                PointRenderer.Draw(canvas, viewport, style, feature, feature.Geometry, _symbolCache, layerOpacity * style.Opacity);
-            else if (feature.Geometry is MultiPoint)
-                MultiPointRenderer.Draw(canvas, viewport, style, feature, feature.Geometry, _symbolCache, layerOpacity * style.Opacity);
-            else if (feature.Geometry is LineString)
-                LineStringRenderer.Draw(canvas, viewport, style, feature, feature.Geometry, layerOpacity * style.Opacity);
-            else if (feature.Geometry is MultiLineString)
-                MultiLineStringRenderer.Draw(canvas, viewport, style, feature, feature.Geometry, layerOpacity * style.Opacity);
-            else if (feature.Geometry is Polygon)
-                PolygonRenderer.Draw(canvas, viewport, style, feature, feature.Geometry, layerOpacity * style.Opacity, _symbolCache);
-            else if (feature.Geometry is MultiPolygon)
-                MultiPolygonRenderer.Draw(canvas, viewport, style, feature, feature.Geometry, layerOpacity * style.Opacity, _symbolCache);
-            else if (feature.Geometry is IRaster)
-                RasterRenderer.Draw(canvas, viewport, style, feature, layerOpacity * style.Opacity, _tileCache, _currentIteration);
+            if (RendererFactory != null && feature is CustomRenderedFeature)
+            {
+                RendererFactory.OnRender(feature, canvas, viewport, _currentIteration);
+            }
+            else
+            {
+                if (feature.Geometry is Point)
+                    PointRenderer.Draw(canvas, viewport, style, feature, feature.Geometry, _symbolCache, layerOpacity * style.Opacity);
+                else if (feature.Geometry is MultiPoint)
+                    MultiPointRenderer.Draw(canvas, viewport, style, feature, feature.Geometry, _symbolCache, layerOpacity * style.Opacity);
+                else if (feature.Geometry is LineString)
+                    LineStringRenderer.Draw(canvas, viewport, style, feature, feature.Geometry, layerOpacity * style.Opacity);
+                else if (feature.Geometry is MultiLineString)
+                    MultiLineStringRenderer.Draw(canvas, viewport, style, feature, feature.Geometry, layerOpacity * style.Opacity);
+                else if (feature.Geometry is Polygon)
+                    PolygonRenderer.Draw(canvas, viewport, style, feature, feature.Geometry, layerOpacity * style.Opacity, _symbolCache);
+                else if (feature.Geometry is MultiPolygon)
+                    MultiPolygonRenderer.Draw(canvas, viewport, style, feature, feature.Geometry, layerOpacity * style.Opacity, _symbolCache);
+                else if (feature.Geometry is IRaster)
+                    RasterRenderer.Draw(canvas, viewport, style, feature, layerOpacity * style.Opacity, _tileCache, _currentIteration);
+            }
         }
 
         private void Render(object canvas, IViewport viewport, IEnumerable<IWidget> widgets, float layerOpacity)

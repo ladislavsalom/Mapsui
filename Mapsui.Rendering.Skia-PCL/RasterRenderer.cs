@@ -62,7 +62,7 @@ namespace Mapsui.Rendering.Skia
 
         private static SKMatrix CreateRotationMatrix(IViewport viewport, BoundingBox boundingBox, SKMatrix priorMatrix)
         {
-            SKMatrix matrix;
+            SKMatrix matrix = new SKMatrix();
 
             // The front-end sets up the canvas with a matrix based on screen scaling (e.g. retina).
             // We need to retain that effect by combining our matrix with the incoming matrix.

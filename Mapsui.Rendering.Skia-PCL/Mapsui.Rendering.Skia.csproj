@@ -4,12 +4,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!--<PackageReference Include="" Version=""/>-->
+    <PackageReference Include="SkiaSharp" Version="1.68.0" />
+	<PackageReference Include="SkiaSharp.Svg" Version="1.60.0" />
 	<PackageReference Include="System.ValueTuple" Version="4.4.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Mapsui\Mapsui.csproj" />
   </ItemGroup>
 
 </Project>
