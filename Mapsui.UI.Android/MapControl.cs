@@ -52,7 +52,8 @@ namespace Mapsui.UI.Android
         {
             SetBackgroundColor(Color.Transparent);
             _scale = DetermineSkiaScale();
-            _canvas = new SKGLSurfaceView(Context); 
+            _canvas = new SKGLSurfaceView(Context);
+            _canvas.RenderMode = global::Android.Opengl.Rendermode.WhenDirty;
             //_canvas = new SKCanvasView(Context);
             //_canvas.PaintSurface += CanvasOnPaintSurface;
             _canvas.PaintSurface += this._canvas_PaintSurface;
@@ -73,7 +74,7 @@ namespace Mapsui.UI.Android
         {
             TryInitializeViewport();
             if (!_map.Viewport.Initialized) return;
-
+            //if (_canvas.IsDirty == false) return;
             args.Surface.Canvas.Scale(_scale, _scale); // we can only set the scale in the render loop
 
             var viewportCopy = new Viewport(this._map.Viewport); // to avoid flickering we must copy the viewport
@@ -338,6 +339,7 @@ namespace Mapsui.UI.Android
                 // Calling Invalidate on the MapControl itself is not enough in some case (observed in XF).
                 Invalidate();
                 _canvas?.Invalidate();
+                _canvas?.RequestRender();
             }
             catch (ObjectDisposedException e)
             {
