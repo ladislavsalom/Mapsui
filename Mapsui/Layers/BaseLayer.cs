@@ -51,13 +51,13 @@ namespace Mapsui.Layers
         /// <summary>
         /// Gets or sets an arbitrary object value that can be used to store custom information about this element
         /// </summary>
-        public object Tag 
-        { 
+        public object Tag
+        {
             get => _tag;
             set
-            { 
-                _tag = value; 
-                OnPropertyChanged(nameof(Tag)); 
+            {
+                _tag = value;
+                OnPropertyChanged(nameof(Tag));
             }
         }
 
@@ -244,5 +244,7 @@ namespace Mapsui.Layers
         public Hyperlink Attribution { get; set; }
 
         public virtual IReadOnlyList<double> Resolutions { get; } = new List<double>();
+        public bool IsInfoLayer { get; set; }
     }
 }
+

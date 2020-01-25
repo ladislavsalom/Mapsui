@@ -1,3 +1,19 @@
+# Mapsui - TourPickr edition
+
+I use this customized Mapsui library in [TourPickr Android app](https://tourpickr.com). It has a few performance improvements and a few new classes/interfaces that provide better customization.
+
+Namely:
+* CustomRenderedFeature class + IRendererFactory interface - use this to render custom shapes directly on Skia canvas
+* IFeatureCustomHitTest interface - use this to perform custom hit tests (useful with CustomRenderedFeature)
+
+Notes:
+* Tested only on Android devices
+* WPF rendering support removed
+* There is no NuGet, clone this repo and pack your own
+* Based on 1.4.* version of Mapsui
+
+Original Read Me:
+
 <p align="left"><img src="Docs/Images/logo/icon.png" alt="Mapsui" height="180px"></p>
 
 | What  | Status  | 

@@ -17,6 +17,7 @@
 
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using Mapsui.Fetcher;
 using Mapsui.Geometries;
 using Mapsui.Providers;

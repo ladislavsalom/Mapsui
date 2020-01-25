@@ -43,7 +43,7 @@ namespace Mapsui.UI
 
                 var features = layer.GetFeaturesInView(layer.Envelope, resolution);
 
-                var feature = features.LastOrDefault(f => 
+                var feature = features.LastOrDefault(f =>
                     IsTouchingTakingIntoAccountSymbolStyles(worldPosition, f, layer.Style, resolution, symbolCache, margin));
 
                 if (feature != null)
@@ -67,7 +67,7 @@ namespace Mapsui.UI
             };
         }
 
-        private static bool IsTouchingTakingIntoAccountSymbolStyles(Point point, IFeature feature, IStyle layerStyle, 
+        private static bool IsTouchingTakingIntoAccountSymbolStyles(Point point, IFeature feature, IStyle layerStyle,
             double resolution, ISymbolCache symbolCache, int margin = 0)
         {
             var styles = new List<IStyle>();
@@ -75,6 +75,11 @@ namespace Mapsui.UI
             styles.AddRange(feature.Styles);
 
             var marginInWorldUnits = margin * resolution;
+
+            if (feature is IFeatureCustomHitTest hitTest)
+            {
+                return hitTest.IsHit(point, feature, resolution);
+            }
 
             if (feature.Geometry is Point)
             {

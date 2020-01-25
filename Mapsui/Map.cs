@@ -93,9 +93,9 @@ namespace Mapsui
             }
         }
 
-        public IList<ILayer> InfoLayers { get; } = new List<ILayer>();
+        //public IList<ILayer> InfoLayers { get; } = new List<ILayer>();
 
-        public IList<ILayer> HoverLayers { get; } = new List<ILayer>();
+        //public IList<ILayer> HoverLayers { get; } = new List<ILayer>();
 
         public Viewport Viewport { get; }
 
@@ -190,7 +190,7 @@ namespace Mapsui
             layer.DataChanged -= LayerDataChanged;
             layer.PropertyChanged -= LayerPropertyChanged;
 
-            InfoLayers.Remove(layer);
+            //InfoLayers.Remove(layer);
 
             Resolutions = DetermineResolutions(Layers);
 
@@ -216,7 +216,7 @@ namespace Mapsui
             }
 
             if (Info == null) return false;
-            var mapInfo = InfoHelper.GetMapInfo(Viewport, screenPosition, scale, InfoLayers, symbolCache);
+            var mapInfo = InfoHelper.GetMapInfo(Viewport, screenPosition, scale, Layers.Where(i => i.IsInfoLayer), symbolCache);
 
             if (mapInfo != null)
             {
@@ -239,22 +239,22 @@ namespace Mapsui
 
         public void InvokeHover(Point screenPosition, float scale, ISymbolCache symbolCache)
         {
-            if (Hover == null) return;
-            if (HoverLayers.Count == 0) return;
-            var mapInfo = InfoHelper.GetMapInfo(Viewport, screenPosition, scale, HoverLayers, symbolCache);
+            //if (Hover == null) return;
+            //if (HoverLayers.Count == 0) return;
+            //var mapInfo = InfoHelper.GetMapInfo(Viewport, screenPosition, scale, HoverLayers, symbolCache);
 
-            if (mapInfo?.Feature != _previousHoverEventArgs?.MapInfo.Feature) // only notify when the feature changes
-            {
-                var mapInfoEventArgs = new MapInfoEventArgs
-                {
-                    MapInfo = mapInfo,
-                    NumTaps = 0,
-                    Handled = false
-                };
+            //if (mapInfo?.Feature != _previousHoverEventArgs?.MapInfo.Feature) // only notify when the feature changes
+            //{
+            //    var mapInfoEventArgs = new MapInfoEventArgs
+            //    {
+            //        MapInfo = mapInfo,
+            //        NumTaps = 0,
+            //        Handled = false
+            //    };
                 
-                _previousHoverEventArgs = mapInfoEventArgs;
-                Hover?.Invoke(this, mapInfoEventArgs);
-            }
+            //    _previousHoverEventArgs = mapInfoEventArgs;
+            //    Hover?.Invoke(this, mapInfoEventArgs);
+            //}
         }
 
         private void LayersLayerAdded(ILayer layer)

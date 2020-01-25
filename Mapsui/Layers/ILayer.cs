@@ -99,5 +99,7 @@ namespace Mapsui.Layers
         Hyperlink Attribution { get; }
 
         IReadOnlyList<double> Resolutions { get; }
+
+        bool IsInfoLayer { get; set; }
     }
 }
